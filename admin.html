@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Panel - Affiliate World</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Firebase Compat SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <style>
+        /* Admin Specific Overrides */
+        body {
+            background-color: #f1f5f9;
+        }
+
+        .login-box {
+            max-width: 400px;
+            margin: 10vh auto;
+            background: var(--white);
+            padding: 3rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+        }
+
+        .login-box h2 {
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-box p {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .login-box input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .admin-dashboard {
+            display: none;
+            max-width: 900px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-section {
+            background: var(--white);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            border: 1px solid #e2e8f0;
+        }
+
+        .dashboard-section h2 {
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-main);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent-primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* File Input Style */
+        .file-upload-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .logout-btn {
+            background-color: #ef4444;
+            /* Red */
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            background-color: #dc2626;
+        }
+
+        .view-site-btn {
+            background-color: var(--white);
+            color: var(--text-main);
+            border: 1px solid #e2e8f0;
+            padding: 8px 16px;
+            border-radius: 6px;
+            margin-right: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .view-site-btn:hover {
+            background-color: #f8fafc;
+            color: var(--accent-primary);
+        }
+
+        #image-preview {
+            margin-top: 10px;
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 8px;
+            display: none;
+            box-shadow: var(--shadow-sm);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="container">
+        <div class="login-box">
+            <h2>Admin Access</h2>
+            <p>Enter your credentials to manage the site.</p>
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <button onclick="attemptLogin()" class="btn btn-primary"
+                style="width: 100%; margin-top: 1rem;">Login</button>
+            <div id="login-error" style="color: #ef4444; margin-top: 1rem; font-size: 0.9rem; display: none;">
+                Access Denied. Check your credentials.
+            </div>
+            <br><br>
+            <a href="index.html" style="font-size: 0.85rem; color: var(--text-muted);">&larr; Return to Website</a>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="dashboard" class="admin-dashboard">
+        <div class="dashboard-header">
+            <h1>Content Manager</h1>
+            <div>
+                <a href="index.html" class="view-site-btn" target="_blank">View Site</a>
+                <button onclick="logout()" class="logout-btn">Log Out</button>
+            </div>
+        </div>
+
+        <!-- Manage Blogs (Delete) -->
+        <section class="dashboard-section">
+            <h2>🗑️ Manage Blogs</h2>
+            <div id="admin-blog-list" style="max-height: 400px; overflow-y: auto;">
+                <p>Loading blogs...</p>
+            </div>
+        </section>
+
+        <!-- Add New Blog -->
+        <section class="dashboard-section">
+            <h2>📝 Publish New Blog</h2>
+            <div class="form-group">
+                <label>Blog Title</label>
+                <input type="text" id="blog-title" placeholder="e.g. Top 10 Marketing Tools">
+            </div>
+            <div class="form-group">
+                <label>Subtitle / Category</label>
+                <input type="text" id="blog-subtitle" placeholder="e.g. SOFTWARE REVIEWS">
+            </div>
+            <div class="form-group">
+                <label>Blog Image</label>
+                <!-- CHANGED: File Input -->
+                <input type="file" id="blog-image-input" accept="image/*" onchange="previewImage()">
+                <img id="image-preview" src="" alt="Preview">
+                <!-- Hidden input to store Base64 string -->
+                <input type="hidden" id="blog-image-base64">
+            </div>
+            <div class="form-group">
+                <label>Content</label>
+                <textarea id="blog-content" placeholder="Write your blog post here..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Affiliate / Action Link</label>
+                <input type="text" id="blog-link" placeholder="https://example.com/product">
+            </div>
+            <button onclick="addBlog()" class="btn btn-primary">Publish Post</button>
+        </section>
+
+        <!-- Edit About Page -->
+        <section class="dashboard-section">
+            <h2>ℹ️ Edit 'About' Page</h2>
+            <div class="form-group">
+                <textarea id="edit-about"></textarea>
+            </div>
+            <button onclick="saveContent('about')" class="btn btn-primary">Save Changes</button>
+        </section>
+
+        <!-- Edit Privacy Page -->
+        <section class="dashboard-section">
+            <h2>🔒 Edit 'Privacy' Policy</h2>
+            <div class="form-group">
+                <textarea id="edit-privacy"></textarea>
+            </div>
+            <button onclick="saveContent('privacy')" class="btn btn-primary">Save Changes</button>
+        </section>
+
+        <!-- Edit Contact Email -->
+        <section class="dashboard-section">
+            <h2>📧 Update Contact Email</h2>
+            <div class="form-group">
+                <input type="email" id="edit-email">
+            </div>
+            <button onclick="saveContent('email')" class="btn btn-primary">Update Email</button>
+        </section>
+
+    </div>
+
+    <script src="firebase-config.js"></script>
+    <script src="admin.js"></script>
+</body>
+
+</html>

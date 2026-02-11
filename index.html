@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OFFERYOUWANT</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Firebase Compat SDKs (Works with file://) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo" onclick="showPage('home')">Offer You <span class="highlight">Want</span></a>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showPage('home')">Home</a></li>
+                <li><a href="#" onclick="showPage('about')">About</a></li>
+                <li><a href="#" onclick="showPage('privacy')">Privacy</a></li>
+                <li><a href="#" onclick="showPage('contact')">Contact</a></li>
+            </ul>
+            <div class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="container main-content">
+
+        <!-- HOME PAGE -->
+        <section id="home" class="page-section active">
+            <header class="section-header">
+                <h1>Latest Recommendations</h1>
+                <p>Discover the best products curated just for you.</p>
+            </header>
+            <div id="blog-container" class="blog-grid">
+                <!-- Blogs will be injected here via JavaScript -->
+            </div>
+        </section>
+
+        <!-- ABOUT PAGE -->
+        <section id="about" class="page-section hidden">
+            <header class="section-header">
+                <h1>About Us</h1>
+            </header>
+            <div id="about-content" class="text-content">
+                <!-- Content injected via JS -->
+                <p>Loading...</p>
+            </div>
+        </section>
+
+        <!-- PRIVACY PAGE -->
+        <section id="privacy" class="page-section hidden">
+            <header class="section-header">
+                <h1>Privacy Policy</h1>
+            </header>
+            <div id="privacy-content" class="text-content">
+                <!-- Content injected via JS -->
+                <p>Loading...</p>
+            </div>
+        </section>
+
+        <!-- CONTACT PAGE -->
+        <section id="contact" class="page-section hidden">
+            <header class="section-header">
+                <h1>Contact Us</h1>
+            </header>
+            <div class="contact-wrapper">
+                <p>Have questions? We'd love to hear from you.</p>
+                <div id="contact-display">
+                    <!-- Email will be injected here -->
+                </div>
+                <!-- Message Now Button will range to mailto: from JS -->
+                <a id="message-btn" href="#" class="btn btn-primary">Message Now</a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Offer You Want. All rights reserved.</p>
+            <!-- Hidden Owner Button -->
+            <button id="owner-login-btn" onclick="window.location.href='admin.html'">OW</button>
+        </div>
+    </footer>
+
+    <!-- Load Config First, then Script -->
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
